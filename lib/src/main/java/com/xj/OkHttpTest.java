@@ -4,6 +4,7 @@ import com.xj.tool.LogTool;
 
 import java.io.IOException;
 
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,13 +34,14 @@ public class OkHttpTest {
 //            }
 //        });
 
-        String body = "{'mobile':'13713709078',"
-                + "'password':'844733477'}";
-        LogTool.log(body.toString());
+        RequestBody requestBody = new FormBody.Builder()
+                .add("mobile", "13713709078")
+                .add("password", "844733477")
+                .build();
         Request request = new Request.Builder()
                 .url("http://coffeeapi.yuanlai.com/account/login.do")
                 .addHeader("Cache-Control", "no-cache")
-                .post(RequestBody.create(JSON, body))
+                .post(requestBody)
                 .build();
         try {
             Response response = okHttpClient.newCall(request).execute();
