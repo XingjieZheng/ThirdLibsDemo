@@ -1,8 +1,10 @@
 package com.xj.rxdemo;
 
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -116,13 +118,23 @@ public class MainActivity extends BaseActivity
     private int translationY = 0;
 
     private void moveText() {
-//        View txtHelloWorld = findViewById(R.id.txtHelloWorld);
-//        txtHelloWorld.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        View txtHelloWorld = findViewById(R.id.txtHelloWorld);
+        txtHelloWorld.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                v.setTranslationY(translationY += 100);
-//            }
-//        });
 
+                bottomSheetDialog();
+            }
+        });
+
+    }
+
+    private void bottomSheetDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_bottom_sheet, null);
+        bottomSheetDialog.setContentView(view);
+        bottomSheetDialog.setTitle("bottom sheet dialog");
+        bottomSheetDialog.show();
     }
 }
