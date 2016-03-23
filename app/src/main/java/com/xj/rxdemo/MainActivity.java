@@ -13,7 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar toolbar;
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        moveText();
     }
 
     @Override
@@ -109,5 +111,18 @@ public class MainActivity extends AppCompatActivity
         } else {
             return false;
         }
+    }
+
+    private int translationY = 0;
+
+    private void moveText() {
+//        View txtHelloWorld = findViewById(R.id.txtHelloWorld);
+//        txtHelloWorld.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                v.setTranslationY(translationY += 100);
+//            }
+//        });
+
     }
 }
