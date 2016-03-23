@@ -6,9 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import okhttp3.Cache;
-import okhttp3.CacheControl;
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -22,6 +20,7 @@ public class OkHttpTest {
 
 
     public static void main(String args[]) {
+
         runOkHttp();
     }
 
@@ -32,22 +31,22 @@ public class OkHttpTest {
         Cache cache = new Cache(file, cacheSize);
         OkHttpClient okHttpClient = new OkHttpClient.Builder().cache(cache).build();
 
-//        RequestBody requestBody = new FormBody.Builder()
-//                .add("mobile", "13713709078")
-//                .add("password", "844733477")
-//                .build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("mobile", "13713709078")
+                .add("password", "844733477")
+                .build();
         Request request = new Request.Builder()
-//                .url("http://coffeeapi.yuanlai.com/account/login.do")
-                .url("http://publicobject.com/helloworld.txt")
+                .url("http://coffeeapi.yuanlai.com/account/login.do")
+//                .url("http://publicobject.com/helloworld.txt")
 //                .addHeader("Cache-Control", "max-age=30")
 //                .post(requestBody)
                 .build();
         try {
             Response response = okHttpClient.newCall(request).execute();
-//            LogTool.log("header===================================");
-//            LogTool.log(response.headers().toString());
-//            LogTool.log("header===================================");
-//            LogTool.log(response.body().string());
+            LogTool.log("header===================================");
+            LogTool.log(response.headers().toString());
+            LogTool.log("header===================================");
+            LogTool.log(response.body().string());
             LogTool.log("networkResponse " + response.networkResponse());
             LogTool.log("cacheResponse " + response.cacheResponse());
             response.body().close();
