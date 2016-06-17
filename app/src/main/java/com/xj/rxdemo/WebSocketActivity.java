@@ -23,6 +23,7 @@ public class WebSocketActivity extends AppCompatActivity {
 
     private WebSocketClient webSocketClient;
     private boolean isConnectOpen = false;
+    private MessageBean messageBean;
 
     @Bind(R.id.txtGetMsg)
     TextView txtGetMsg;
@@ -35,6 +36,7 @@ public class WebSocketActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_socket);
         ButterKnife.bind(this);
+        init();
     }
 
     @OnClick(R.id.btnConnect)
@@ -101,5 +103,11 @@ public class WebSocketActivity extends AppCompatActivity {
         userInfo.setUserId(1);
         Gson gson = new Gson();
         webSocketClient.send(gson.toJson(userInfo));
+    }
+
+    private void init() {
+        messageBean = new MessageBean();
+        messageBean.setReceiverUserId(2);
+        messageBean.setSenderUserId(1);
     }
 }
