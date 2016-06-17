@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.handshake.ServerHandshake;
@@ -20,6 +22,7 @@ import butterknife.OnClick;
 public class WebSocketActivity extends AppCompatActivity {
 
     private WebSocketClient webSocketClient;
+    private boolean isConnectOpen = false;
 
     @Bind(R.id.txtGetMsg)
     TextView txtGetMsg;
@@ -65,6 +68,8 @@ public class WebSocketActivity extends AppCompatActivity {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 Log.i("webSocketClient", "onOpen");
+                isConnectOpen = true;
+                sendUserInfo();
             }
 
             @Override
@@ -81,6 +86,7 @@ public class WebSocketActivity extends AppCompatActivity {
             @Override
             public void onClose(int i, String s, boolean b) {
                 Log.i("webSocketClient", "onClose():" + i + " " + s + " " + b);
+                isConnectOpen = false;
             }
 
             @Override
@@ -88,5 +94,12 @@ public class WebSocketActivity extends AppCompatActivity {
                 Log.i("webSocketClient", "onError" + e.toString());
             }
         };
+    }
+
+    private void sendUserInfo() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(1);
+        Gson gson = new Gson();
+        webSocketClient.send(gson.toJson(userInfo));
     }
 }
