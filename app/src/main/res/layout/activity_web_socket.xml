@@ -10,6 +10,32 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.xj.rxdemo.WebSocketActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edtSenderUserId"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="#f0f0f0"
+            android:hint="sender user id"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/edtReceiverUserId"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="#f0f0f0"
+            android:hint="receiver user id"
+            android:inputType="number" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnConnect"
         android:layout_width="match_parent"

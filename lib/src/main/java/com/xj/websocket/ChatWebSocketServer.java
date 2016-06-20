@@ -38,8 +38,8 @@ public class ChatWebSocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
         System.out.println("onOpen(), remote address:" + webSocket.getRemoteSocketAddress().getAddress().getHostAddress()
-                + "\n" + webSocket.getRemoteSocketAddress().getHostName()
-                + "\n" + webSocket.getRemoteSocketAddress().getPort());
+                + "\t" + webSocket.getRemoteSocketAddress().getHostName()
+                + "\t" + webSocket.getRemoteSocketAddress().getPort());
     }
 
     @Override
@@ -60,12 +60,15 @@ public class ChatWebSocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket webSocket, String s) {
         System.out.println("onMessage(), remote address:" + webSocket.getRemoteSocketAddress().getAddress().getHostAddress()
-                + "\n" + s);
+                + "\t" + s);
 
         if (s != null && s.contains(USER_ID)) {
             Gson gson = new Gson();
             UserInfo userInfo = gson.fromJson(s, UserInfo.class);
-            if (userInfo != null && userInfo.getUserId() != 0 && userInfo.getAddress() != null) {
+            if (userInfo != null && userInfo.getUserId() != 0) {
+                String address = webSocket.getRemoteSocketAddress().getAddress().getHostAddress() + ":"
+                        + webSocket.getRemoteSocketAddress().getPort();
+                userInfo.setAddress(address);
                 if (addressMap.containsKey(userInfo.getUserId())) {
                     addressMap.replace(userInfo.getUserId(), userInfo.getAddress());
                 } else {
@@ -77,18 +80,34 @@ public class ChatWebSocketServer extends WebSocketServer {
             MessageBean messageBean = gson.fromJson(s, MessageBean.class);
             if (messageBean != null) {
                 String address = addressMap.get(messageBean.getReceiverUserId());
-                sendToSomeone(messageBean.getMessage(), address);
+                if (address != null) {
+                    sendToSomeone(messageBean.getMessage(), address);
+                } else {
+                    System.out.println("error: receiver (userId:" + messageBean.getReceiverUserId() + ") does not connect to the server!");
+                }
             }
         }
+
+        //print message
+        System.out.println("client list start---------------------------------");
+        Iterator iterator = addressMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, String> entry = (Map.Entry<Integer, String>) iterator.next();
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+        System.out.println("client list end-----------------------------------");
     }
 
     @Override
     public void onError(WebSocket webSocket, Exception e) {
         System.out.println("onError(), remote address:" + webSocket.getRemoteSocketAddress().getAddress().getHostAddress()
-                + "\n" + e.toString());
+                + "\t" + e.toString());
     }
 
     public void sendToAll(String msg) {
+        if (msg == null) {
+            return;
+        }
         Collection<WebSocket> collection = connections();
         synchronized (collection) {
             for (WebSocket webSocket : collection) {
@@ -99,21 +118,30 @@ public class ChatWebSocketServer extends WebSocketServer {
     }
 
     public void sendToSomeone(String msg, String address) {
+        if (msg == null || address == null) {
+            return;
+        }
         String addressAll[] = address.split(":");
         if (addressAll.length != 2) {
             return;
         }
         String ip = addressAll[0];
         String port = addressAll[1];
+
+        boolean isSendSuccessfully = false;
         Collection<WebSocket> collection = connections();
         synchronized (collection) {
             for (WebSocket webSocket : collection) {
-                System.out.println(webSocket.getRemoteSocketAddress().getAddress());
-                if (ip.equals(webSocket.getRemoteSocketAddress().getAddress().getAddress())
-                        && port.equals(webSocket.getRemoteSocketAddress().getPort())) {
+                if (ip.equals(webSocket.getRemoteSocketAddress().getAddress().getHostAddress())
+                        && port.equals(String.valueOf(webSocket.getRemoteSocketAddress().getPort()))) {
                     webSocket.send(msg);
+                    isSendSuccessfully = true;
+                    System.out.println("Send " + msg + " to " + address + " successfully.");
                 }
             }
+        }
+        if (!isSendSuccessfully) {
+            System.out.println("Send " + msg + " to " + address + "fail, cause by count not find ip: " + address);
         }
     }
 

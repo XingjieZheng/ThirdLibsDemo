@@ -2,6 +2,7 @@ package com.xj.rxdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,11 +25,16 @@ public class WebSocketActivity extends AppCompatActivity {
     private WebSocketClient webSocketClient;
     private boolean isConnectOpen = false;
     private MessageBean messageBean;
+    private UserInfo userInfo;
 
     @Bind(R.id.txtGetMsg)
     TextView txtGetMsg;
     @Bind(R.id.edtSendMsg)
     EditText edtSendMsg;
+    @Bind(R.id.edtSenderUserId)
+    EditText edtSenderUserId;
+    @Bind(R.id.edtReceiverUserId)
+    EditText edtReceiverUserId;
 
 
     @Override
@@ -41,6 +47,12 @@ public class WebSocketActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnConnect)
     void clickConnectBtn() {
+        if (TextUtils.isEmpty(edtSenderUserId.getText())) {
+            return;
+        }
+        messageBean.setSenderUserId(Integer.valueOf(edtSenderUserId.getText().toString()));
+        userInfo.setUserId(Integer.valueOf(edtSenderUserId.getText().toString()));
+
         try {
             createWebSocketClient();
             webSocketClient.connect();
@@ -51,12 +63,13 @@ public class WebSocketActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSend)
     void clickSendBtn() {
-        if (webSocketClient == null) {
+        if (webSocketClient == null || TextUtils.isEmpty(edtReceiverUserId.getText()) || TextUtils.isEmpty(edtSendMsg.getText())) {
             return;
         }
-        String msg = "Empty";
-        msg = edtSendMsg.getText().toString();
-        webSocketClient.send(msg);
+        messageBean.setReceiverUserId(Integer.valueOf(edtReceiverUserId.getText().toString()));
+        messageBean.setMessage(edtSendMsg.getText().toString());
+        Gson gson = new Gson();
+        webSocketClient.send(gson.toJson(messageBean));
     }
 
 
@@ -99,15 +112,20 @@ public class WebSocketActivity extends AppCompatActivity {
     }
 
     private void sendUserInfo() {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(1);
         Gson gson = new Gson();
         webSocketClient.send(gson.toJson(userInfo));
     }
 
     private void init() {
         messageBean = new MessageBean();
-        messageBean.setReceiverUserId(2);
-        messageBean.setSenderUserId(1);
+        userInfo = new UserInfo();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (webSocketClient != null) {
+            webSocketClient.close();
+        }
     }
 }
