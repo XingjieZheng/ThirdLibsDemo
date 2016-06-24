@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.xj.rxdemo.Constants;
 import com.xj.rxdemo.MessageBean;
 import com.xj.rxdemo.R;
-import com.xj.rxdemo.UserInfo;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
@@ -29,9 +29,8 @@ import butterknife.OnClick;
 public class WebSocketFragment extends Fragment {
 
     private WebSocketClient webSocketClient;
-    private boolean isConnectOpen = false;
     private MessageBean messageBean;
-    private UserInfo userInfo;
+    private MessageBean messageBeanReceive;
 
     @Bind(R.id.txtGetMsg)
     TextView txtGetMsg;
@@ -59,7 +58,6 @@ public class WebSocketFragment extends Fragment {
             return;
         }
         messageBean.setSenderUserId(Integer.valueOf(edtSenderUserId.getText().toString()));
-        userInfo.setUserId(Integer.valueOf(edtSenderUserId.getText().toString()));
 
         try {
             createWebSocketClient();
@@ -93,25 +91,27 @@ public class WebSocketFragment extends Fragment {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 Log.i("webSocketClient", "onOpen");
-                isConnectOpen = true;
                 sendUserInfo();
             }
 
             @Override
             public void onMessage(final String s) {
                 Log.i("webSocketClient", "onMessage():" + s);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        txtGetMsg.setText(s);
-                    }
-                });
+                Gson gson = new Gson();
+                messageBeanReceive = gson.fromJson(s, MessageBean.class);
+                if (messageBeanReceive != null && messageBeanReceive.getMessage() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            txtGetMsg.setText(messageBeanReceive.getMessage());
+                        }
+                    });
+                }
             }
 
             @Override
             public void onClose(int i, String s, boolean b) {
                 Log.i("webSocketClient", "onClose():" + i + " " + s + " " + b);
-                isConnectOpen = false;
             }
 
             @Override
@@ -124,12 +124,14 @@ public class WebSocketFragment extends Fragment {
     private void sendUserInfo() {
         Gson gson = new Gson();
         messageBean.setType(MessageBean.TYPE_REGISTER_MESSAGE);
+        messageBean.setMessage("");
+        messageBean.setSecurityKey(Constants.WEB_SOCKET_SECURITY_KEY);
         webSocketClient.send(gson.toJson(messageBean));
     }
 
     private void init() {
         messageBean = new MessageBean();
-        userInfo = new UserInfo();
+        messageBeanReceive = new MessageBean();
     }
 
 

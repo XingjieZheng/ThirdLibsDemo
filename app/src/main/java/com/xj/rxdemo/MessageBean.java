@@ -9,6 +9,11 @@ public class MessageBean {
     public static final int TYPE_NORMAL_MESSAGE = 0;
     public static final int TYPE_REGISTER_MESSAGE = 1;
 
+    private int senderUserId;
+    private int receiverUserId;
+    private String message;
+    private String securityKey;
+
     public int getReceiverUserId() {
         return receiverUserId;
     }
@@ -43,7 +48,11 @@ public class MessageBean {
 
     private int type;
 
-    private int senderUserId;
-    private int receiverUserId;
-    private String message;
+    public String getSecurityKey() {
+        return securityKey;
+    }
+
+    public void setSecurityKey(String securityKey) {
+        this.securityKey = securityKey;
+    }
 }
