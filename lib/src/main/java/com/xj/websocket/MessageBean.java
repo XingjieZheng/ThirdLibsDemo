@@ -6,6 +6,9 @@ package com.xj.websocket;
  */
 public class MessageBean {
 
+    public static final int TYPE_NORMAL_MESSAGE = 0;
+    public static final int TYPE_REGISTER_MESSAGE = 1;
+
     public int getReceiverUserId() {
         return receiverUserId;
     }
@@ -30,7 +33,17 @@ public class MessageBean {
         this.message = message;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+    private int type;
+
     private int senderUserId;
     private int receiverUserId;
     private String message;
+
 }

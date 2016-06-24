@@ -147,7 +147,7 @@ public class ChatWebSocketServer extends WebSocketServer {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        int port = 8887;
+        int port = 8080;
         ChatWebSocketServer webSocketServer = new ChatWebSocketServer(port);
         webSocketServer.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
