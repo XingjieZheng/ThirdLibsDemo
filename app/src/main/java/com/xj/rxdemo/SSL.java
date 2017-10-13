@@ -1,18 +1,12 @@
-package com.xj;
+package com.xj.rxdemo;
 
-import com.xj.tool.LogTool;
+import android.util.Log;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
@@ -23,39 +17,29 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Collections;
 import java.util.Date;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import okhttp3.Cache;
-import okhttp3.CipherSuite;
-import okhttp3.ConnectionSpec;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.TlsVersion;
 
 /**
  * Created by xj
  * on 2016/3/14.
  */
-public class OkHttpTest {
+public class SSL {
 
 
     public static void main(String args[]) {
 
-//        runOkHttp("https://mobileapi.zhenai.com/login/login.do");
+        runOkHttp("https://mobileapi.zhenai.com/login/login.do");
 //        runOkHttp("https://api.zhenai.com/login/userLogin.do");
 //        runOkHttp("https://www.baidu.com");
-        runOkHttp("https://github.com");
-//        runOkHttp("https://photo.zastatic.com/images/voice/26271/105077380/1500021223908.jpg");
+//        runOkHttp("https://github.com");
     }
 
     private static void runOkHttp(String url) {
@@ -70,7 +54,7 @@ public class OkHttpTest {
 
 
 //        RequestBody requestBody = new FormBody.Builder()
-//                .add("account", "13713709078")
+//                .add("mobile", "13713709078")
 //                .add("password", "844733477")
 //                .build();
         Request request = new Request.Builder()
@@ -83,10 +67,10 @@ public class OkHttpTest {
                 .build();
         try {
             Response response = okHttpClient.newCall(request).execute();
-            LogTool.log("header===================================");
-            LogTool.log(response.headers().toString());
-            LogTool.log("header===================================");
-            LogTool.log(response.body().string());
+            Log.i("SSL", "header===================================");
+            Log.i("SSL", response.headers().toString());
+            Log.i("SSL", "header===================================");
+            Log.i("SSL", response.body().string());
 //            LogTool.log("networkResponse " + response.networkResponse());
 //            LogTool.log("cacheResponse " + response.cacheResponse());
             response.body().close();
@@ -139,34 +123,34 @@ public class OkHttpTest {
                                 System.out.println("------------------end-------------------");
                             }
 
-//                            if (!(null != authType && authType.equalsIgnoreCase("ECDHE_RSA"))) {
-//                                throw new CertificateException("checkServerTrusted: AuthType is not RSA");
-//                            }
-//                            Certificate certificate = getCertificate();
-//                            Date dateNow = new Date();
-//                            try {
-//                                chain[0].checkValidity(dateNow);
-//                                System.out.println("OK");
-//                            } catch (CertificateExpiredException e) { //过期
-//                                System.out.println("Expired");
-//                                System.out.println(e.getMessage());
-//                            } catch (CertificateNotYetValidException e) { //尚未生效
-//                                System.out.println("Too early");
-//                                System.out.println(e.getMessage());
-//                            }
-//                            if (certificate != null) {
-//                                try {
-//                                    chain[0].verify(certificate.getPublicKey());
-//                                } catch (NoSuchAlgorithmException e) {
-//                                    e.printStackTrace();
-//                                } catch (InvalidKeyException e) {
-//                                    e.printStackTrace();
-//                                } catch (NoSuchProviderException e) {
-//                                    e.printStackTrace();
-//                                } catch (SignatureException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
+                            if (!(null != authType && authType.equalsIgnoreCase("ECDHE_RSA"))) {
+                                throw new CertificateException("checkServerTrusted: AuthType is not RSA");
+                            }
+                            Certificate certificate = getCertificate();
+                            Date dateNow = new Date();
+                            try {
+                                chain[0].checkValidity(dateNow);
+                                System.out.println("OK");
+                            } catch (CertificateExpiredException e) { //过期
+                                System.out.println("Expired");
+                                System.out.println(e.getMessage());
+                            } catch (CertificateNotYetValidException e) { //尚未生效
+                                System.out.println("Too early");
+                                System.out.println(e.getMessage());
+                            }
+                            if (certificate != null) {
+                                try {
+                                    chain[0].verify(certificate.getPublicKey());
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (InvalidKeyException e) {
+                                    e.printStackTrace();
+                                } catch (NoSuchProviderException e) {
+                                    e.printStackTrace();
+                                } catch (SignatureException e) {
+                                    e.printStackTrace();
+                                }
+                            }
 
 //                            if (!expected) {
 //                                throw new CertificateException("checkServerTrusted: Expected public key: "

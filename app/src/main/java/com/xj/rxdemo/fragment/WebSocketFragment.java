@@ -81,7 +81,7 @@ public class WebSocketFragment extends Fragment {
 
 
     private void createWebSocketClient() throws URISyntaxException {
-        String address = "ws://10.10.152.73:8080/websocket";
+        String address = "ws://10.10.152.67:8080/websocket";
         Log.i("createWebSocketClient", address);
         if (webSocketClient != null) {
             webSocketClient.close();

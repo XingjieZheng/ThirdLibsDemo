@@ -12,7 +12,48 @@ public class Test {
 
     public static void main(String args[]) {
         System.out.println("runRx");
-        runRx();
+//        runRx();
+//        test();
+        testTryCatch();
+    }
+
+    public static void testTryCatch() {
+        int state = 0;
+        try {
+            testTryCatchInside();
+            state = 1;
+            System.out.println("state:" + state);
+        } catch (Exception e) {
+            state = 2;
+            System.out.println("state:" + state);
+            e.printStackTrace();
+            System.out.println("state:" + state);
+        }
+        System.out.println("state end:" + state);
+    }
+
+    private static void testTryCatchInside() {
+        try {
+            TestBean testBean = new TestBean();
+            System.out.println(testBean.instance.name);
+        } catch (Exception e) {
+            System.out.println("testTryCatchInside");
+            e.printStackTrace();
+        }
+    }
+
+    public static class TestBean {
+        public String name;
+        public TestBean instance;
+    }
+
+
+    public static void test() {
+        int source = 0x33123456;
+        int change = source & 0x00ffffff;
+        int change1 = change | 0x33000000;
+        System.out.println(Integer.toHexString(source) + " " + Integer.toHexString(change)
+                + " " + Integer.toHexString(change1));
     }
 
     public static void runRx() {

@@ -9,6 +9,7 @@ import java.util.List;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -50,16 +51,21 @@ public class TestRetrofit {
 //        List<Interceptor> list = okHttpClient.interceptors();
 //        list.add(interceptor);
 
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        builder.addInterceptor(logging);
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://coffeeapi.yuanlai.com")
+                .baseUrl("https://github.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         ApiService apiService = retrofit.create(ApiService.class);
         Call<AccountLoginBean> call = apiService.login("13713709078", "844733477");
         try {
             Response<AccountLoginBean> response = call.execute();
-            AccountLoginBean bean = response.body();
-            LogTool.log(bean.getData().toString());
+            AccountLoginBean accountLoginBean = response.body();
+            LogTool.log(accountLoginBean.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
